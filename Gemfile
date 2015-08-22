@@ -4,3 +4,7 @@ source 'https://rubygems.org'
 gemspec
 
 gem "minitest-rg"
+gem "colorize"
+gem "paint"
+gem "term-ansicolor"
+gem "ansi"
