@@ -1,5 +1,8 @@
 require_relative 'minitest_helper'
 require 'term/ansicolor'
+require 'ansi/code'
+require "paint"
+require "colorize"
 
 def Red(string)
   "\033[31m#{string}\033[0m"
@@ -16,13 +19,16 @@ class TestAnsiPalette < Minitest::Test
     assert_equal Red("hello"), "\033[31mhello\033[0m"
   end
 
+  # Colorize seems to define all the defaults
   def test_add_colors_with_colorize
-    require "colorize"
     assert_equal "hello".red, "\e[0;31;49mhello\e[0m"
   end
 
+  def test_add_blink_with_colorize
+    assert_equal "hello".blink, "\e[5;39;49mhello\e[0m"
+  end
+
   def test_add_colors_with_paint
-    require "paint"
     assert_equal Paint["hello", :red], "\033[31mhello\033[0m"
   end
 
@@ -31,9 +37,7 @@ class TestAnsiPalette < Minitest::Test
   end
 
   def test_add_color_with_ansi
-    require 'ansi/code'
     assert_equal ANSI.red {"hello"}, "\033[31mhello\033[0m"
     assert_equal ANSI.red + "hello", "\033[31mhello"
   end
 end
-
