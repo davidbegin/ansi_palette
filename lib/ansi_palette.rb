@@ -1,10 +1,20 @@
-require "ansi_palette/version"
+# require "ansi_palette/version"
 
 module AnsiPalette
+  # START_ESCAPE_SEQUENCE = "\033["
+  START_ESCAPE_SEQUENCE = "\e["
+
+  END_ESCAPE_SEQUENCE = "m"
+  RED_FG = "31"
+  GREEN_FG = "32"
+
+  # I do not know if this is 0 actual purpose
+  RESET_COLOR = "0"
+
   class ColoredString
-    def initialize(string, colored_string)
+    def initialize(string, color)
       @string = string
-      @colored_string = colored_string
+      @color  = color
     end
 
     def green(substring)
@@ -15,18 +25,49 @@ module AnsiPalette
     def to_s; colored_string; end
     def to_str; colored_string; end
 
+    def colored_string
+      @colored_string ||= set_color +
+                        string +
+                        reset_color
+    end
+
+    def set_color
+      case color
+      when :green then set_green_string
+      when :red then set_red_string
+      end
+    end
+
     private
 
-    attr_reader :string, :colored_string
+    attr_reader :string, :color
+
+    def set_red_string
+      escape_sequence(RED_FG)
+    end
+
+    def set_green_string
+      escape_sequence(GREEN_FG)
+    end
+
+    def reset_color
+      escape_sequence(RESET_COLOR)
+    end
+
+    def escape_sequence(content)
+      START_ESCAPE_SEQUENCE + content + END_ESCAPE_SEQUENCE
+    end
   end
 end
 
 def Red(string)
-  colored_string = "\033[31m#{string}\033[0m"
-  AnsiPalette::ColoredString.new(string, colored_string)
+  AnsiPalette::ColoredString.new(
+    string, :red
+  )
 end
 
 def Green(string)
-  colored_string = "\033[32m#{string}\033[0m"
-  AnsiPalette::ColoredString.new(string, colored_string)
+  AnsiPalette::ColoredString.new(
+    string, :green
+  )
 end
