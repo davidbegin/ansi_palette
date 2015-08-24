@@ -1,9 +1,7 @@
 # require "ansi_palette/version"
 
 module AnsiPalette
-  # START_ESCAPE_SEQUENCE = "\033["
-  START_ESCAPE_SEQUENCE = "\e["
-
+  START_ESCAPE_SEQUENCE = "\e[" # "\033["
   END_ESCAPE_SEQUENCE = "m"
   RED_FG = "31"
   GREEN_FG = "32"
@@ -26,29 +24,18 @@ module AnsiPalette
     def to_str; colored_string; end
 
     def colored_string
-      @colored_string ||= set_color +
-                        string +
-                        reset_color
+      @colored_string ||= set_color + string + reset_color
     end
 
     def set_color
-      case color
-      when :green then set_green_string
-      when :red then set_red_string
-      end
+      escape_sequence(
+        AnsiPalette.const_get(color.to_s.upcase + "_FG")
+      )
     end
 
     private
 
     attr_reader :string, :color
-
-    def set_red_string
-      escape_sequence(RED_FG)
-    end
-
-    def set_green_string
-      escape_sequence(GREEN_FG)
-    end
 
     def reset_color
       escape_sequence(RESET_COLOR)
@@ -61,13 +48,9 @@ module AnsiPalette
 end
 
 def Red(string)
-  AnsiPalette::ColoredString.new(
-    string, :red
-  )
+  AnsiPalette::ColoredString.new(string, :red)
 end
 
 def Green(string)
-  AnsiPalette::ColoredString.new(
-    string, :green
-  )
+  AnsiPalette::ColoredString.new(string, :green)
 end
