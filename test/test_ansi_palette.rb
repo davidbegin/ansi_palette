@@ -4,10 +4,6 @@ require 'ansi/code'
 require "paint"
 require "colorize"
 
-def Red(string)
-  "\033[31m#{string}\033[0m"
-end
-
 class TestAnsiPalette < Minitest::Test
   include Term::ANSIColor
 
@@ -16,7 +12,7 @@ class TestAnsiPalette < Minitest::Test
   end
 
   def test_coloring_a_string_red
-    assert_equal Red("hello"), "\033[31mhello\033[0m"
+    assert_equal Red("hello").to_str, "\033[31mhello\033[0m"
   end
 
   # Colorize seems to define all the defaults
@@ -39,5 +35,9 @@ class TestAnsiPalette < Minitest::Test
   def test_add_color_with_ansi
     assert_equal ANSI.red {"hello"}, "\033[31mhello\033[0m"
     assert_equal ANSI.red + "hello", "\033[31mhello"
+  end
+
+  def test_add_color_with_custom_api
+    assert_equal Cyan("hello").to_str, "\033[36mhello\033[0m"
   end
 end

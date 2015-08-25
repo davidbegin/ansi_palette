@@ -1,12 +1,19 @@
-# require "ansi_palette/version"
+require "ansi_palette/version"
 
 module AnsiPalette
   START_ESCAPE_SEQUENCE = "\e[" # "\033["
   END_ESCAPE_SEQUENCE = "m"
-  RED_FG = "31"
-  GREEN_FG = "32"
+  RED_FG     = 31
+  GREEN_FG   = 32
+  BLACK_FG   = 30
+  RED_FG     = 31
+  GREEN_FG   = 32
+  YELLOW_FG  = 33
+  BLUE_FG    = 34
+  MAGENTA_FG = 35
+  CYAN_FG    = 36
+  WHITE_FG   = 37
 
-  # I do not know if this is 0 actual purpose
   RESET_COLOR = "0"
 
   class ColoredString
@@ -29,7 +36,7 @@ module AnsiPalette
 
     def set_color
       escape_sequence(
-        AnsiPalette.const_get(color.to_s.upcase + "_FG")
+        AnsiPalette.const_get(color.to_s.upcase + "_FG").to_s
       )
     end
 
@@ -47,10 +54,12 @@ module AnsiPalette
   end
 end
 
-def Red(string)
-  AnsiPalette::ColoredString.new(string, :red)
-end
-
-def Green(string)
-  AnsiPalette::ColoredString.new(string, :green)
+[
+  :cyan,
+  :red,
+  :green
+].each do |color|
+  define_method color.to_s.capitalize do |string|
+    AnsiPalette::ColoredString.new(string, color)
+  end
 end
