@@ -6,6 +6,7 @@ require "colorize"
 
 class TestAnsiPalette < Minitest::Test
   include Term::ANSIColor
+  include AnsiPalette
 
   def test_that_it_has_a_version_number
     refute_nil ::AnsiPalette::VERSION
