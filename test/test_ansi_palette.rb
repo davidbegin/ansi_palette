@@ -13,7 +13,7 @@ class TestAnsiPalette < Minitest::Test
   end
 
   def test_coloring_a_string_red
-    assert_equal Red("hello").to_str, "\033[31mhello\033[0m"
+    assert_equal Red("hello").to_s, "\033[31mhello\033[0m"
   end
 
   # Colorize seems to define all the defaults

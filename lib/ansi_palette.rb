@@ -2,22 +2,23 @@ require "ansi_palette/version"
 
 module AnsiPalette
   COLOR_HASH = {
-    :black       => 30,
-    :red         => 31,
-    :green       => 32,
-    :yellow      => 33,
-    :blue        => 34,
-    :magenta     => 35,
-    :cyan        => 36,
-    :white       => 37
+    :black   => { :foreground => 30, :background => 40 },
+    :red     => { :foreground => 31, :background => 41 },
+    :green   => { :foreground => 32, :background => 42 },
+    :yellow  => { :foreground => 33, :background => 43 },
+    :blue    => { :foreground => 34, :background => 44 },
+    :magenta => { :foreground => 35, :background => 45 },
+    :cyan    => { :foreground => 36, :background => 46 },
+    :white   => { :foreground => 37, :background => 47 },
   }
 
-  COLOR_HASH.each_pair.each do |color, color_code|
+  COLOR_HASH.each_pair.each do |color, color_codes|
     define_method color.to_s.capitalize do |string|
       AnsiPalette::ColoredString.new(string, color)
     end
 
-    const_set("#{color.upcase}_FG", color_code)
+    const_set("#{color.upcase}_FG", color_codes.fetch(:foreground))
+    const_set("#{color.upcase}_BG", color_codes.fetch(:background))
   end
 
   START_ESCAPE = "\e[" # "\033["
@@ -30,14 +31,6 @@ module AnsiPalette
       @color  = color
     end
 
-    def green(substring)
-      beginning, last = string.split(substring)
-      "#{Red(beginning)}#{Green(substring)}#{Red(last)}"
-    end
-
-    def to_s; colored_string; end
-    def to_str; colored_string; end
-
     def colored_string
       @colored_string ||= set_color + string + reset_color
     end
@@ -47,6 +40,9 @@ module AnsiPalette
         AnsiPalette.const_get(color.to_s.upcase + "_FG").to_s
       )
     end
+
+    alias_method :to_s, :colored_string
+    alias_method :to_str, :to_s
 
     private
 
@@ -61,4 +57,3 @@ module AnsiPalette
     end
   end
 end
-
