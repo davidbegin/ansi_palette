@@ -19,51 +19,73 @@ Or install it yourself as:
 
     $ gem install ansi_palette
 
-First example is using Capitalized Conversion Methods,
-which return instantances of ColoredString, which
-act like strings when they need be
+---
+
+Here is the new implementation I am working on, currently
+still under heavy exploration.
 
 ```ruby
-def Red(string)
-  colored_string = "\033[31m#{string}\033[0m"
-  ColoredString.new(string, colored_string)
-end
+module AnsiPalette
+  COLOR_HASH = {
+    :black   => { :foreground => 30, :background => 40 },
+    :red     => { :foreground => 31, :background => 41 },
+    :green   => { :foreground => 32, :background => 42 },
+    :yellow  => { :foreground => 33, :background => 43 },
+    :blue    => { :foreground => 34, :background => 44 },
+    :magenta => { :foreground => 35, :background => 45 },
+    :cyan    => { :foreground => 36, :background => 46 },
+    :white   => { :foreground => 37, :background => 47 },
+  }
 
-def Green(string)
-  colored_string = "\033[32m#{string}\033[0m"
-  ColoredString.new(string, colored_string)
-end
+  COLOR_HASH.each_pair.each do |color, color_codes|
+    define_method color.to_s.capitalize do |string|
+      AnsiPalette::ColoredString.new(string, color)
+    end
 
-class ColoredString
-  def initialize(string, colored_string)
-    @string = string
-    @colored_string = colored_string
+    const_set("#{color.upcase}_FG", color_codes.fetch(:foreground))
+    const_set("#{color.upcase}_BG", color_codes.fetch(:background))
   end
 
-  def green(substring)
-    beginning, last = string.split(substring)
-    "#{Red(beginning)}#{Green(substring)}#{Red(last)}"
+  START_ESCAPE = "\e[" # "\033["
+  END_ESCAPE   = "m"
+  RESET_COLOR  = 0
+
+  class ColoredString
+    def initialize(string, color)
+      @string = string
+      @color  = color
+    end
+
+    def colored_string
+      @colored_string ||= set_color + string + reset_color
+    end
+
+    def set_color
+      escape_sequence(
+        AnsiPalette.const_get(color.to_s.upcase + "_FG").to_s
+      )
+    end
+
+    alias_method :to_s, :colored_string
+    alias_method :to_str, :to_s
+
+    private
+
+    attr_reader :string, :color
+
+    def reset_color
+      escape_sequence(RESET_COLOR.to_s)
+    end
+
+    def escape_sequence(content)
+      START_ESCAPE + content + END_ESCAPE
+    end
   end
-
-  def to_s; colored_string; end
-  def to_str; colored_string; end
-
-  private
-
-  attr_reader :string, :colored_string
 end
 
 puts "\n\n"
 puts %!puts Red("hello")!
 puts Red("hello")
-
-puts "\n\n"
-puts %!Red("hello").green("e")!
-puts Red("hello").green("e")
-
-puts "\n\n"
-puts %!Red("National SCRUM League").green("SCRUM")!
-puts Red("National SCRUM League").green("SCRUM")
 ```
 
 
