@@ -11,7 +11,11 @@ class TestAnsiPalette < Minitest::Test
     assert_equal Red("hello").to_s, "\033[31mhello\033[0m"
   end
 
-  def test_add_color_with_custom_api
+  def test_add_coloring_a_string_cyan
     assert_equal Cyan("hello").to_str, "\033[36mhello\033[0m"
+  end
+
+  def test_add_background_color
+    assert_equal BgCyan("hello").to_str, "\033[46mhello\033[0m"
   end
 end

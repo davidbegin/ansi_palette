@@ -17,6 +17,10 @@ module AnsiPalette
       AnsiPalette::ColoredString.new(string, color)
     end
 
+    define_method "Bg" + color.to_s.capitalize do |string|
+      AnsiPalette::ColoredString.new(string, color, :background)
+    end
+
     const_set("#{color.upcase}_FG", color_codes.fetch(:foreground))
     const_set("#{color.upcase}_BG", color_codes.fetch(:background))
   end
@@ -26,9 +30,10 @@ module AnsiPalette
   RESET_COLOR  = 0
 
   class ColoredString
-    def initialize(string, color)
+    def initialize(string, color, type = :foreground)
       @string = string
       @color  = color
+      @type   = type
     end
 
     def colored_string
@@ -37,7 +42,7 @@ module AnsiPalette
 
     def set_color
       escape_sequence(
-        AnsiPalette.const_get(color.to_s.upcase + "_FG").to_s
+        AnsiPalette.const_get(color.to_s.upcase + color_type).to_s
       )
     end
 
@@ -46,7 +51,14 @@ module AnsiPalette
 
     private
 
-    attr_reader :string, :color
+    attr_reader :string, :color, :type
+
+    def color_type
+      case type
+      when :background then "_BG"
+      when :foreground then "_FG"
+      end
+    end
 
     def reset_color
       escape_sequence(RESET_COLOR.to_s)
