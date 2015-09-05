@@ -24,3 +24,5 @@ doc = <<-DOC
 DOC
 
 puts doc
+
+puts Bold("Header")

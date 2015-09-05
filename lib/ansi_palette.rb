@@ -25,6 +25,10 @@ module AnsiPalette
     const_set("#{color.upcase}_BG", color_codes.fetch(:background))
   end
 
+  def Bold(str)
+    ColoredString.new(str, :bold).bold
+  end
+
   START_ESCAPE = "\e[" # "\033["
   END_ESCAPE   = "m"
   RESET_COLOR  = 0
@@ -34,6 +38,10 @@ module AnsiPalette
       @string = string
       @color  = color
       @type   = type
+    end
+
+    def bold
+      escape_sequence("1") + string + reset_color
     end
 
     def colored_string
