@@ -34,18 +34,31 @@ module AnsiPalette
   RESET_COLOR  = 0
 
   class ColoredString
-    def initialize(string, color, type = :foreground)
+    def initialize(string, color, type = :foreground, bold = false)
       @string = string
       @color  = color
       @type   = type
+      @bold   = bold
     end
 
-    def bold
-      escape_sequence("1") + string + reset_color
+    attr_accessor :bold
+
+    def find_color(new_color)
+      AnsiPalette.const_get(new_color.to_s.upcase + color_type).to_s
     end
 
     def colored_string
-      @colored_string ||= set_color + string + reset_color
+      @colored_string ||=
+        set_bold +
+        set_color +
+        string +
+        reset_color
+    end
+
+    def bold?; bold; end
+
+    def set_bold
+      bold? ? escape_sequence("1") : ""
     end
 
     def set_color

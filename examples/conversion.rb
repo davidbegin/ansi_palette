@@ -25,4 +25,9 @@ DOC
 
 puts doc
 
-puts Bold("Header")
+color = Blue("Header")
+puts color
+
+color = Red("Header")
+color.bold = true
+puts color
