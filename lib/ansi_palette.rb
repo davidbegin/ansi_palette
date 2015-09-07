@@ -12,13 +12,21 @@ module AnsiPalette
     :white   => { :foreground => 37, :background => 47 },
   }
 
+  EFFECT_HASH = {
+    :reset          => 0,
+    :bold           => 1,
+    :underline      => 4,
+    :blink          => 5,
+    :inverse_colors => 7
+  }
+
   COLOR_HASH.each_pair.each do |color, color_codes|
     define_method color.to_s.capitalize do |string|
-      AnsiPalette::ColoredString.new(string, color)
+      AnsiPalette::ColoredString.new(string: string, color: color)
     end
 
     define_method "Bg" + color.to_s.capitalize do |string|
-      AnsiPalette::ColoredString.new(string, color, :background)
+      AnsiPalette::ColoredString.new(string: string, background: color)
     end
 
     const_set("#{color.upcase}_FG", color_codes.fetch(:foreground))
@@ -26,7 +34,7 @@ module AnsiPalette
   end
 
   def Bold(str)
-    ColoredString.new(str, :bold).bold
+    ColoredString.new(string: str, bold: true).bold
   end
 
   START_ESCAPE = "\e[" # "\033["
@@ -34,51 +42,90 @@ module AnsiPalette
   RESET_COLOR  = 0
 
   class ColoredString
-    def initialize(string, color, type = :foreground, bold = false)
-      @string = string
-      @color  = color
-      @type   = type
-      @bold   = bold
+    def initialize(string:,
+                   color: nil,
+                   foreground: nil,
+                   background: nil,
+                   modifier: nil,
+                   bold: false,
+                   blink: false
+                  )
+
+      @string     = string
+      @color      = color
+      @modifier   = modifier
+      @background = background
+      @foreground = foreground
+      @bold       = bold
+      @blink      = blink
     end
 
-    attr_accessor :bold
-
-    def find_color(new_color)
-      AnsiPalette.const_get(new_color.to_s.upcase + color_type).to_s
+    EFFECT_HASH.keys.each do |modifier_method|
+      attr_accessor modifier_method
     end
+
+    attr_accessor :modifier
 
     def colored_string
-      @colored_string ||=
-        set_bold +
-        set_color +
+      set_modifiers +
+        set_foreground_color +
+        set_background_color +
         string +
         reset_color
     end
 
+    def blink?; blink; end
+
     def bold?; bold; end
-
-    def set_bold
-      bold? ? escape_sequence("1") : ""
-    end
-
-    def set_color
-      escape_sequence(
-        AnsiPalette.const_get(color.to_s.upcase + color_type).to_s
-      )
-    end
 
     alias_method :to_s, :colored_string
     alias_method :to_str, :to_s
 
     private
 
-    attr_reader :string, :color, :type
+    attr_reader :string, :color, :modifier, :background, :foreground
 
-    def color_type
-      case type
-      when :background then "_BG"
-      when :foreground then "_FG"
+    def set_modifiers
+      set_modifier +
+        set_blink +
+        set_bold +
+        set_underline +
+        set_blink +
+        set_inverse_colors
+    end
+
+    EFFECT_HASH.each_pair do |modifier, code|
+      define_method "#{modifier}?" do
+        instance_variable_get("@#{modifier}")
       end
+
+      define_method "set_#{modifier}" do
+        send("#{modifier}?") ? escape_sequence(code.to_s) : ""
+      end
+    end
+
+    def set_modifier
+      !modifier.nil? ? escape_sequence(modifier.to_s) : ""
+    end
+
+    def set_foreground_color
+      set_color(foreground_color, "_FG")
+    end
+
+    def set_background_color
+      set_color(background, "_BG")
+    end
+
+    def set_color(color, color_type)
+      return "" if color.nil?
+
+      escape_sequence(
+        AnsiPalette.const_get(color.to_s.upcase + color_type).to_s
+      )
+    end
+
+    def foreground_color
+      color || foreground
     end
 
     def reset_color

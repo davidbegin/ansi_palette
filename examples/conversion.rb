@@ -31,3 +31,24 @@ puts color
 color = Red("Header")
 color.bold = true
 puts color
+
+color = Yellow("Header")
+color.bold = true
+color.blink = true
+puts color
+
+color = Yellow("Header")
+color.bold = true
+color.blink = true
+color.modifier = 3
+puts color
+
+color = Cyan("Header")
+color.bold = true
+color.modifier = 4
+puts color
+
+color = Red("Header")
+color.inverse_colors = true
+color.bold
+puts color
