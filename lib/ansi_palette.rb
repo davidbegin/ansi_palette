@@ -1,4 +1,5 @@
-require "ansi_palette/version"
+# require "ansi_palette/version"
+require "forwardable"
 
 module AnsiPalette
   COLOR_HASH = {
@@ -42,6 +43,8 @@ module AnsiPalette
   RESET_COLOR  = 0
 
   class ColoredString
+    extend ::Forwardable
+
     def initialize(string:,
                    color: nil,
                    foreground: nil,
@@ -81,9 +84,7 @@ module AnsiPalette
     alias_method :to_s, :colored_string
     alias_method :to_str, :to_s
 
-    def length
-      string.length
-    end
+    def_delegators :string, :length
 
     private
 
