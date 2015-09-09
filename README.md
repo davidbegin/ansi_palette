@@ -1,7 +1,13 @@
 # AnsiPalette
 
-This is a place to explore coloring Terminal output, and the various API's
-for doing so. This will be comparing gems, as well as simple homegrown implementations.
+AnsiPalette is yet another terminal coloring gem.
+I have never been satisfied with the various coloring gems,
+for one reason or another, and never knew the details of how each worked.
+
+Goals of this Gem:
+  * Help me understand more about ANSI escape characters
+  * Create code the makes it easy to understand how ANSI escape charactors are used
+  * Create a simple and usable API for coloring strings
 
 ## Installation
 
@@ -25,75 +31,57 @@ Here is the new implementation I am working on, currently
 still under heavy exploration.
 
 ```ruby
-module AnsiPalette
-  COLOR_HASH = {
-    :black   => { :foreground => 30, :background => 40 },
-    :red     => { :foreground => 31, :background => 41 },
-    :green   => { :foreground => 32, :background => 42 },
-    :yellow  => { :foreground => 33, :background => 43 },
-    :blue    => { :foreground => 34, :background => 44 },
-    :magenta => { :foreground => 35, :background => 45 },
-    :cyan    => { :foreground => 36, :background => 46 },
-    :white   => { :foreground => 37, :background => 47 },
-  }
-
-  COLOR_HASH.each_pair.each do |color, color_codes|
-    define_method color.to_s.capitalize do |string|
-      AnsiPalette::ColoredString.new(string, color)
-    end
-
-    const_set("#{color.upcase}_FG", color_codes.fetch(:foreground))
-    const_set("#{color.upcase}_BG", color_codes.fetch(:background))
-  end
-
-  START_ESCAPE = "\e[" # "\033["
-  END_ESCAPE   = "m"
-  RESET_COLOR  = 0
-
-  class ColoredString
-    def initialize(string, color)
-      @string = string
-      @color  = color
-    end
-
-    def colored_string
-      @colored_string ||= set_color + string + reset_color
-    end
-
-    def set_color
-      escape_sequence(
-        AnsiPalette.const_get(color.to_s.upcase + "_FG").to_s
-      )
-    end
-
-    alias_method :to_s, :colored_string
-    alias_method :to_str, :to_s
-
-    private
-
-    attr_reader :string, :color
-
-    def reset_color
-      escape_sequence(RESET_COLOR.to_s)
-    end
-
-    def escape_sequence(content)
-      START_ESCAPE + content + END_ESCAPE
-    end
-  end
-end
-
 puts "\n\n"
 puts %!puts Red("hello")!
 puts Red("hello")
+puts "\n\n"
+
+header = <<-HEADER
+  A Classy Comment Header
+HEADER
+
+body = <<-BODY
+  Some very interesting comment text.
+  With all these intricate details.
+  Explaining everything you could ever
+  want to know.
+BODY
+
+doc = <<-DOC
+  #{Red(header)}
+    #{Cyan(body)}
+DOC
+
+puts doc
+
+color = Blue("Header")
+puts color
+
+color = Red("Header")
+color.bold = true
+puts color
+
+color = Yellow("Header")
+color.bold = true
+color.blink = true
+puts color
+
+color = Yellow("Header")
+color.bold = true
+color.blink = true
+color.modifier = 3
+puts color
+
+color = Cyan("Header")
+color.bold = true
+color.modifier = 4
+puts color
+
+color = Red("Header")
+color.inverse_colors = true
+color.bold
+puts color
 ```
-
-
-## Development
-
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `bin/console` for an interactive prompt that will allow you to experiment.
-
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release` to create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 
 ## Contributing
 
