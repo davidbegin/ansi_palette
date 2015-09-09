@@ -52,3 +52,45 @@ color = Red("Header")
 color.inverse_colors = true
 color.bold
 puts color
+
+header = Red("WOAH")
+header.blink = true
+
+puts "$$$$$$$$"
+puts "$ #{header} $"
+puts "$$$$$$$$"
+
+class Billboard
+  def initialize(text:, border: "†")
+    @text   = text
+    @border = border
+  end
+
+  def display
+    puts "\n"
+    puts border * length
+    print border + " "
+    print text
+    puts " " + border
+    print border * length
+    puts "\n"
+  end
+
+  private
+
+  attr_reader :text, :border
+
+  def length
+    text.length + 4
+  end
+end
+
+billboad = Billboard.new(text: "DINOSAURS")
+billboad.display
+
+header = Cyan("PINOT NOIR")
+header.blink = true
+header.underline = true
+header.bold = true
+billboad = Billboard.new(text: header, border: "®")
+billboad.display

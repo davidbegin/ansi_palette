@@ -81,6 +81,10 @@ module AnsiPalette
     alias_method :to_s, :colored_string
     alias_method :to_str, :to_s
 
+    def length
+      string.length
+    end
+
     private
 
     attr_reader :string, :color, :modifier, :background, :foreground
