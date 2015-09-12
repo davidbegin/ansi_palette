@@ -1,4 +1,4 @@
-# require "ansi_palette/version"
+require "ansi_palette/version"
 require "forwardable"
 
 module AnsiPalette
