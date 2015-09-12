@@ -42,7 +42,7 @@ module AnsiPalette
   END_ESCAPE   = "m"
   RESET_COLOR  = 0
 
-  class ColoredString
+  class ColoredString < String
     extend ::Forwardable
 
     def initialize(string:,
