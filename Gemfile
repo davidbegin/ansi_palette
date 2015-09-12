@@ -5,7 +5,3 @@ gemspec
 
 gem "minitest-rg"
 gem "minitest-focus"
-gem "colorize"
-gem "paint"
-gem "term-ansicolor"
-gem "ansi"
