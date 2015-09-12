@@ -1,5 +1,7 @@
 # AnsiPalette
 
+[![Code Climate](https://codeclimate.com/github/presidentJFK/ansi_palette/badges/gpa.svg)](https://codeclimate.com/github/presidentJFK/ansi_palette)
+
 AnsiPalette is yet another terminal coloring gem.
 I have never been satisfied with the various coloring gems,
 for one reason or another, and never knew the details of how each worked.
