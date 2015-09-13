@@ -9,13 +9,9 @@ Gem::Specification.new do |spec|
   spec.authors       = ["David Begin"]
   spec.email         = ["davidmichaelbe@gmail.com"]
 
-  if spec.respond_to?(:metadata)
-    spec.metadata['allowed_push_host'] = "TODO: Set to 'http://mygemserver.com' to prevent pushes to rubygems.org, or delete to allow pushes to any server."
-  end
-
-  spec.summary       = %q{TODO: Write a short summary, because Rubygems requires one.}
-  spec.description   = %q{TODO: Write a longer description or delete this line.}
-  spec.homepage      = "TODO: Put your gem's website or public repo URL here."
+  spec.summary       = %q{A gem for helping you color strings with ANSI escape codes.}
+  spec.description   = %q{A gem for helping you color strings with ANSI escape codes.}
+  spec.homepage      = "https://github.com/presidentJFK/ansi_palette"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
