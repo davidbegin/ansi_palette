@@ -5,3 +5,5 @@ gemspec
 
 gem "minitest-rg"
 gem "minitest-focus"
+
+gem "codeclimate-test-reporter", group: :test, require: nil
