@@ -1,6 +1,6 @@
 # AnsiPalette
 
-[![Build Status](https://travis-ci.org/presidentJFK/ansi_palette.svg?branch=master)](https://travis-ci.org/presidentJFK/ansi_palette) [![Test Coverage](https://codeclimate.com/github/presidentJFK/ansi_palette/badges/coverage.svg)](https://codeclimate.com/github/presidentJFK/ansi_palette/coverage) [![Code Climate](https://codeclimate.com/github/presidentJFK/ansi_palette/badges/gpa.svg)](https://codeclimate.com/github/presidentJFK/ansi_palette) [![Dependency Status](https://gemnasium.com/presidentJFK/ansi_palette.svg)](https://gemnasium.com/presidentJFK/ansi_palette)
+[![Gem Version](https://badge.fury.io/rb/ansi_palette.svg)](http://badge.fury.io/rb/ansi_palette) [![Build Status](https://travis-ci.org/presidentJFK/ansi_palette.svg?branch=master)](https://travis-ci.org/presidentJFK/ansi_palette) [![Test Coverage](https://codeclimate.com/github/presidentJFK/ansi_palette/badges/coverage.svg)](https://codeclimate.com/github/presidentJFK/ansi_palette/coverage) [![Code Climate](https://codeclimate.com/github/presidentJFK/ansi_palette/badges/gpa.svg)](https://codeclimate.com/github/presidentJFK/ansi_palette) [![Dependency Status](https://gemnasium.com/presidentJFK/ansi_palette.svg)](https://gemnasium.com/presidentJFK/ansi_palette)
 
 AnsiPalette is yet another terminal coloring gem.
 I have never been satisfied with the various coloring gems,
