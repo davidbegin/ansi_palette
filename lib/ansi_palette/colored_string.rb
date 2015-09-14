@@ -2,6 +2,10 @@ require "forwardable"
 require_relative "../ansi_palette"
 
 module AnsiPalette
+  START_ESCAPE = "\e[" # "\033["
+  END_ESCAPE   = "m"
+  RESET_COLOR  = 0
+
   COLOR_HASH = {
     :black   => { :foreground => 30, :background => 40 },
     :red     => { :foreground => 31, :background => 41 },
@@ -34,13 +38,6 @@ module AnsiPalette
     const_set("#{color.upcase}_BG", color_codes.fetch(:background))
   end
 
-  def Bold(str)
-    ColoredString.new(string: str, bold: true).bold
-  end
-
-  START_ESCAPE = "\e[" # "\033["
-  END_ESCAPE   = "m"
-  RESET_COLOR  = 0
   class ColoredString < String
     extend ::Forwardable
 
