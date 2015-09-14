@@ -26,10 +26,19 @@ module AnsiPalette
   }
 
   COLOR_HASH.each_pair.each do |color, color_codes|
+
+    # defines the following methods:
+    #   Black, Red, Green, Yellow, Blue, Magenta, Cyan, White
+    #
+    # which all return a ColoredString instance
     define_method color.to_s.capitalize do |string|
       AnsiPalette::ColoredString.new(string: string, color: color)
     end
 
+    # defines the following methods:
+    #   BlackBg, RedBg, GreenBg, YellowBg, BlueBg, MagentaBg, CyanBg, WhiteBg
+    #
+    # which all return a ColoredString instance
     define_method "Bg" + color.to_s.capitalize do |string|
       AnsiPalette::ColoredString.new(string: string, background: color)
     end
@@ -47,8 +56,7 @@ module AnsiPalette
                    background: nil,
                    modifier: nil,
                    bold: false,
-                   blink: false
-                  )
+                   blink: false)
 
       @string     = string
       @color      = color
@@ -59,6 +67,8 @@ module AnsiPalette
       @blink      = blink
     end
 
+    # Defines the following methods:
+    #   reset=, bold=, underline=, blink=, inverse_colors=
     EFFECT_HASH.keys.each do |modifier_method|
       attr_accessor modifier_method
     end
