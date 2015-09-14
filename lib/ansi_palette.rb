@@ -1,2 +1,2 @@
 require "ansi_palette/version"
-require_relative "ansi_palette/colored_string"
+require "ansi_palette/colored_string"
