@@ -50,21 +50,29 @@ module AnsiPalette
   class ColoredString < String
     extend ::Forwardable
 
+    # @param string [String] the string you would like to colorize
+    # @param color [Symbol] the color you would like to affect on the string
+    # @param foreground [Boolean] whether the color passed is for the foreground
+    # @param background [Boolean] whether the color passed is for the background
+    # @param modifier [Integer] the ANSI escape code for the modifier you
+    #   would like to apply to the string passed in
     def initialize(string:,
                    color: nil,
+                   background_color: nil,
                    foreground: nil,
                    background: nil,
                    modifier: nil,
                    bold: false,
                    blink: false)
 
-      @string     = string
-      @color      = color
-      @modifier   = modifier
-      @background = background
-      @foreground = foreground
-      @bold       = bold
-      @blink      = blink
+      @string           = string
+      @color            = color
+      @modifier         = modifier
+      @background       = background
+      @background_color = background_color
+      @foreground       = foreground
+      @bold             = bold
+      @blink            = blink
     end
 
     # Defines the following methods:
@@ -76,25 +84,25 @@ module AnsiPalette
     attr_accessor :modifier
 
     def colored_string
-      set_modifiers +
+      set_modifiers          +
         set_foreground_color +
         set_background_color +
-        string +
+        string               +
         reset_color
     end
 
-    def blink?; blink; end
-
-    def bold?; bold; end
-
     alias_method :to_s, :colored_string
     alias_method :to_str, :to_s
-
     def_delegators :string, :length
 
     private
 
-    attr_reader :string, :color, :modifier, :background, :foreground
+    attr_reader :string,
+                :color,
+                :modifier,
+                :background,
+                :foreground,
+                :background_color
 
     def set_modifiers
       set_modifier +
