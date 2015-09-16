@@ -1,5 +1,4 @@
 require "forwardable"
-require_relative "../ansi_palette"
 
 module AnsiPalette
   START_ESCAPE = "\e[" # "\033["
@@ -40,37 +39,33 @@ module AnsiPalette
     #
     # which all return a ColoredString instance
     define_method "Bg" + color.to_s.capitalize do |string|
-      AnsiPalette::ColoredString.new(string: string, background: color)
+      AnsiPalette::ColoredString.new(string: string, background_color: color)
     end
 
     const_set("#{color.upcase}_FG", color_codes.fetch(:foreground))
     const_set("#{color.upcase}_BG", color_codes.fetch(:background))
   end
 
-  class ColoredString < String
+  class ColoredString
     extend ::Forwardable
 
     # @param string [String] the string you would like to colorize
     # @param color [Symbol] the color you would like to affect on the string
-    # @param foreground [Boolean] whether the color passed is for the foreground
-    # @param background [Boolean] whether the color passed is for the background
+    # @param background_color [Symbol] the color you would like to affect on the background
+    #   of the string
     # @param modifier [Integer] the ANSI escape code for the modifier you
     #   would like to apply to the string passed in
     def initialize(string:,
                    color: nil,
                    background_color: nil,
-                   foreground: nil,
-                   background: nil,
                    modifier: nil,
                    bold: false,
                    blink: false)
 
       @string           = string
       @color            = color
-      @modifier         = modifier
-      @background       = background
       @background_color = background_color
-      @foreground       = foreground
+      @modifier         = modifier
       @bold             = bold
       @blink            = blink
     end
@@ -99,10 +94,8 @@ module AnsiPalette
 
     attr_reader :string,
                 :color,
-                :modifier,
-                :background,
-                :foreground,
-                :background_color
+                :background_color,
+                :modifier
 
     def set_modifiers
       set_modifier +
@@ -128,11 +121,11 @@ module AnsiPalette
     end
 
     def set_foreground_color
-      set_color(foreground_color, "_FG")
+      set_color(color, "_FG")
     end
 
     def set_background_color
-      set_color(background, "_BG")
+      set_color(background_color, "_BG")
     end
 
     def set_color(color, color_type)
@@ -141,10 +134,6 @@ module AnsiPalette
       escape_sequence(
         AnsiPalette.const_get(color.to_s.upcase + color_type).to_s
       )
-    end
-
-    def foreground_color
-      color || foreground
     end
 
     def reset_color
