@@ -94,3 +94,19 @@ header.underline = true
 header.bold = true
 billboad = Billboard.new(text: header, border: "®")
 billboad.display
+
+colored_string = AnsiPalette::ColoredString.new(string: "hello")
+colored_string.color = :red
+puts colored_string
+colored_string.background_color = :yellow
+puts colored_string
+colored_string.bold = true
+puts colored_string
+colored_string.blink = true
+puts colored_string
+colored_string.underline = true
+puts colored_string
+colored_string.inverse_colors = true
+puts colored_string
+colored_string.reset!
+puts colored_string

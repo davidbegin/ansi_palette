@@ -1,9 +1,10 @@
 require "forwardable"
 
 module AnsiPalette
-  START_ESCAPE = "\e[" # "\033["
-  END_ESCAPE   = "m"
-  RESET_COLOR  = 0
+  START_ESCAPE     = "\e[".freeze
+  ALT_START_ESCAPE = "\033[".freeze
+  END_ESCAPE       = "m".freeze
+  RESET_CODE       = "0".freeze
 
   COLOR_HASH = {
     :black   => { :foreground => 30, :background => 40 },
@@ -17,7 +18,6 @@ module AnsiPalette
   }
 
   EFFECT_HASH = {
-    :reset          => 0,
     :bold           => 1,
     :underline      => 4,
     :blink          => 5,
@@ -51,32 +51,40 @@ module AnsiPalette
 
     # @param string [String] the string you would like to colorize
     # @param color [Symbol] the color you would like to affect on the string
-    # @param background_color [Symbol] the color you would like to affect on the background
-    #   of the string
+    # @param background_color [Symbol] the color you would like to affect
+    #   on the background of the string
     # @param modifier [Integer] the ANSI escape code for the modifier you
     #   would like to apply to the string passed in
+    # @param options [Hash] for adding effects to your string
+    #
+    # @example Using options hash
+    # ColoredString.new(string: "hello", color: :red, {:blink => true})
     def initialize(string:,
                    color: nil,
                    background_color: nil,
                    modifier: nil,
-                   bold: false,
-                   blink: false)
+                   **options)
 
       @string           = string
       @color            = color
       @background_color = background_color
       @modifier         = modifier
-      @bold             = bold
-      @blink            = blink
+      @bold             = options[:bold]
+      @blink            = options[:blink]
+      @underline        = options[:blink]
+      @inverse_colors   = options[:inverse_colors]
     end
 
+    attr_accessor :string,
+      :color,
+      :background_color,
+      :modifier
+
     # Defines the following methods:
-    #   reset=, bold=, underline=, blink=, inverse_colors=
+    #  #bold=, #underline=, #blink=, #inverse_colors=
     EFFECT_HASH.keys.each do |modifier_method|
       attr_accessor modifier_method
     end
-
-    attr_accessor :modifier
 
     def colored_string
       set_modifiers          +
@@ -86,31 +94,40 @@ module AnsiPalette
         reset_color
     end
 
+    # removes all ansi escape codes from string
+    def reset!
+      @color = nil
+      @background_color = nil
+
+      EFFECT_HASH.each_pair do |modifier, _|
+        instance_variable_set("@#{modifier}", nil)
+      end
+    end
+
     alias_method :to_s, :colored_string
     alias_method :to_str, :to_s
     def_delegators :string, :length
 
     private
 
-    attr_reader :string,
-                :color,
-                :background_color,
-                :modifier
-
     def set_modifiers
       set_modifier +
         set_blink +
         set_bold +
-        set_underline +
         set_blink +
+        set_underline +
         set_inverse_colors
     end
 
     EFFECT_HASH.each_pair do |modifier, code|
+      # defines the following methods:
+      #   #blink? #bold? #inverse_colors? #underline?
       define_method "#{modifier}?" do
         instance_variable_get("@#{modifier}")
       end
 
+      # defines the following methods:
+      #   #set_blink #set_bold #set_inverse_colors #set_underline
       define_method "set_#{modifier}" do
         send("#{modifier}?") ? escape_sequence(code.to_s) : ""
       end
@@ -137,7 +154,7 @@ module AnsiPalette
     end
 
     def reset_color
-      escape_sequence(RESET_COLOR.to_s)
+      escape_sequence(RESET_CODE)
     end
 
     def escape_sequence(content)
