@@ -18,4 +18,10 @@ class TestAnsiPalette < Minitest::Test
   def test_add_background_color
     assert_equal BgCyan("hello").to_str, "\033[46mhello\033[0m"
   end
+
+  def test_reset!
+    colored_string = BgCyan("hello")
+    colored_string.reset!
+    assert_equal colored_string.to_str,"hello\e[0m"
+  end
 end

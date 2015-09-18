@@ -69,10 +69,13 @@ module AnsiPalette
       @color            = color
       @background_color = background_color
       @modifier         = modifier
-      @bold             = options[:bold]
-      @blink            = options[:blink]
-      @underline        = options[:blink]
-      @inverse_colors   = options[:inverse_colors]
+      set_modifier_options(options)
+    end
+
+    def set_modifier_options(options)
+      EFFECT_HASH.keys.each do |modifier|
+        instance_variable_set("@#{modifier.to_s}", options[modifier])
+      end
     end
 
     attr_accessor :string,
