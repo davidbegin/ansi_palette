@@ -25,7 +25,6 @@ module AnsiPalette
   }
 
   COLOR_HASH.each_pair.each do |color, color_codes|
-
     # defines the following methods:
     #   Black, Red, Green, Yellow, Blue, Magenta, Cyan, White
     #
@@ -42,7 +41,14 @@ module AnsiPalette
       AnsiPalette::ColoredString.new(string: string, background_color: color)
     end
 
+    # defines the following constants:
+    #   BLACK_FG, RED_FG, GREEN_FG, YELLOW_FG,_BLUE_FG, MAGENTA_FG,
+    #   CYAN_FG, WHITE_FG
     const_set("#{color.upcase}_FG", color_codes.fetch(:foreground))
+
+    # defines the following constants:
+    #   BLACK_BG, RED_BG, GREEN_BG, YELLOW_BG,_BLUE_BG, MAGENTA_BG,
+    #   CYAN_BG, WHITE_BG
     const_set("#{color.upcase}_BG", color_codes.fetch(:background))
   end
 
@@ -72,12 +78,6 @@ module AnsiPalette
       set_modifier_options(options)
     end
 
-    def set_modifier_options(options)
-      EFFECT_HASH.keys.each do |modifier|
-        instance_variable_set("@#{modifier.to_s}", options[modifier])
-      end
-    end
-
     attr_accessor :string,
       :color,
       :background_color,
@@ -89,12 +89,8 @@ module AnsiPalette
       attr_accessor modifier_method
     end
 
-    def colored_string
-      set_modifiers          +
-        set_foreground_color +
-        set_background_color +
-        string               +
-        reset_color
+    def to_s
+      modified_string + reset_color
     end
 
     # removes all ansi escape codes from string
@@ -107,11 +103,17 @@ module AnsiPalette
       end
     end
 
-    alias_method :to_s, :colored_string
     alias_method :to_str, :to_s
     def_delegators :string, :length
 
     private
+
+    def modified_string
+      set_modifiers +
+        set_foreground_color +
+        set_background_color +
+        string
+    end
 
     def set_modifiers
       set_modifier +
@@ -122,15 +124,21 @@ module AnsiPalette
         set_inverse_colors
     end
 
+    def set_modifier_options(options)
+      EFFECT_HASH.keys.each do |modifier|
+        instance_variable_set("@#{modifier.to_s}", options[modifier])
+      end
+    end
+
     EFFECT_HASH.each_pair do |modifier, code|
       # defines the following methods:
-      #   #blink? #bold? #inverse_colors? #underline?
+      #   #blink?, #bold?, #inverse_colors?, #underline?
       define_method "#{modifier}?" do
         instance_variable_get("@#{modifier}")
       end
 
       # defines the following methods:
-      #   #set_blink #set_bold #set_inverse_colors #set_underline
+      #   #set_blink, #set_bold, #set_inverse_colors, #set_underline,
       define_method "set_#{modifier}" do
         send("#{modifier}?") ? escape_sequence(code.to_s) : ""
       end
@@ -157,6 +165,8 @@ module AnsiPalette
     end
 
     def reset_color
+      return "" if string == modified_string
+
       escape_sequence(RESET_CODE)
     end
 

@@ -22,6 +22,6 @@ class TestAnsiPalette < Minitest::Test
   def test_reset!
     colored_string = BgCyan("hello")
     colored_string.reset!
-    assert_equal colored_string.to_str,"hello\e[0m"
+    assert_equal colored_string.to_str,"hello"
   end
 end
