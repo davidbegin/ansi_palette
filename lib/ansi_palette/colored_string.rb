@@ -52,6 +52,7 @@ module AnsiPalette
     const_set("#{color.upcase}_BG", color_codes.fetch(:background))
   end
 
+  # wraps a string with a set a methods for adding ANSI escape codes
   class ColoredString
     extend ::Forwardable
 
@@ -79,9 +80,9 @@ module AnsiPalette
     end
 
     attr_accessor :string,
-      :color,
-      :background_color,
-      :modifier
+                  :color,
+                  :background_color,
+                  :modifier
 
     # Defines the following methods:
     #  #bold=, #underline=, #blink=, #inverse_colors=
