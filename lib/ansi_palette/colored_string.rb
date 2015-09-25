@@ -96,7 +96,7 @@ module AnsiPalette
 
     # removes all ansi escape codes from string
     def reset!
-      @color = nil
+      @color            = nil
       @background_color = nil
 
       EFFECT_HASH.each_pair do |modifier, _|
@@ -104,23 +104,23 @@ module AnsiPalette
       end
     end
 
-    alias_method :to_str, :to_s
+    alias_method   :to_str, :to_s
     def_delegators :string, :length
 
     private
 
     def modified_string
-      set_modifiers +
+      set_modifiers          +
         set_foreground_color +
         set_background_color +
         string
     end
 
     def set_modifiers
-      set_modifier +
-        set_blink +
-        set_bold +
-        set_blink +
+      set_modifier    +
+        set_blink     +
+        set_bold      +
+        set_blink     +
         set_underline +
         set_inverse_colors
     end
