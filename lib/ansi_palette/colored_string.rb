@@ -1,5 +1,21 @@
 require "forwardable"
 
+# include AnsiPalette
+#   to get access to following methods:
+#   Black, Red, Green, Yellow, Blue, Magenta, Cyan, White
+#   BlackBg, RedBg, GreenBg, YellowBg, BlueBg, MagentaBg, CyanBg, WhiteBg
+#
+# These will all yield AnsiPalette::ColoredString instances
+# which act like strings, only with added ANSI escape characters.
+#
+# You can also create ColoredString instances yourself:
+#
+# @example
+#   colored_str = ColoredString.new(string: "hello", color: :red)
+#   puts colored_str
+#
+#   colored_str.blink = true
+#   puts colored_str
 module AnsiPalette
   START_ESCAPE     = "\e[".freeze
   ALT_START_ESCAPE = "\033[".freeze
@@ -65,7 +81,7 @@ module AnsiPalette
     # @param options [Hash] for adding effects to your string
     #
     # @example Using options hash
-    # ColoredString.new(string: "hello", color: :red, {:blink => true})
+    #   ColoredString.new(string: "hello", color: :red, {:blink => true})
     def initialize(string:,
                    color: nil,
                    background_color: nil,
