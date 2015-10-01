@@ -29,14 +29,10 @@ Or install it yourself as:
 
 ---
 
-Here is the new implementation I am working on, currently
-still under heavy exploration.
-
 ```ruby
-puts "\n\n"
-puts %!puts Red("hello")!
+include AnsiPalette
+
 puts Red("hello")
-puts "\n\n"
 
 header = <<-HEADER
   A Classy Comment Header
