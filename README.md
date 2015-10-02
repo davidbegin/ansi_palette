@@ -98,6 +98,14 @@ colored_string.reset!
 puts colored_string
 ```
 
+## Goals
+
+  Create yet another ANSI String gem but also:
+    * The ability to create nested styled strings
+    * The ability to easily compoud ANSI effects
+    * No monkey patching on String
+    * A codebase that explains how ANSI escape characters are used
+
 ## Contributing
 
 1. Fork it ( https://github.com/[my-github-username]/ansi_palette/fork )
