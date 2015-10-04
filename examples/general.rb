@@ -2,10 +2,8 @@ require_relative "../lib/ansi_palette"
 
 include AnsiPalette
 
-puts "\n\n"
 puts %!puts Red("hello")!
 puts Red("hello")
-puts "\n\n"
 
 header = <<-HEADER
   A Classy Comment Header
