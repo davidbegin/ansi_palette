@@ -121,6 +121,7 @@ module AnsiPalette
     end
 
     alias_method   :to_str, :to_s
+    alias_method   :inspect, :to_s
     def_delegators :string, :length
 
     private
